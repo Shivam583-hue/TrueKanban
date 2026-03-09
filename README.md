@@ -19,34 +19,33 @@ A terminal-based Kanban board built with [Bubble Tea](https://github.com/charmbr
 
 ### Linux (x64)
 ```bash
-curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/kanban-linux-amd64 -o kanban
-chmod +x kanban
-sudo mv kanban /usr/local/bin/
-kanban
+curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-linux-amd64 -o truekanban
+chmod +x truekanban
+sudo mv truekanban /usr/local/bin/
+truekanban
 ```
 
 ### macOS (Apple Silicon)
 ```bash
-curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/kanban-macos-arm64 -o kanban
-chmod +x kanban
-sudo mv kanban /usr/local/bin/
-kanban
+curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-macos-arm64 -o truekanban
+chmod +x truekanban
+sudo mv truekanban /usr/local/bin/
+truekanban
 ```
 
 ### macOS (Intel)
 ```bash
-curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/kanban-macos-amd64 -o kanban
-chmod +x kanban
-sudo mv kanban /usr/local/bin/
-kanban
+curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-macos-amd64 -o truekanban
+chmod +x truekanban
+sudo mv truekanban /usr/local/bin/
+truekanban
 ```
 
 ### Windows (PowerShell)
 ```powershell
-curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/kanban-windows-amd64.exe -o kanban.exe
-# Move to a folder in your PATH, e.g. C:\Windows\System32
-move kanban.exe C:\Windows\System32\kanban.exe
-kanban
+curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-windows-amd64.exe -o truekanban.exe
+move truekanban.exe C:\Windows\System32\truekanban.exe
+truekanban
 ```
 
 > **Note:** Requires CGO (for SQLite). Make sure you have `gcc` installed.
