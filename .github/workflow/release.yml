@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - os: linux-amd64
+            runner: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            binary: truekanban-linux-amd64
+
+          - os: linux-arm64
+            runner: ubuntu-latest
+            goos: linux
+            goarch: arm64
+            binary: truekanban-linux-arm64
+
+          - os: macos-amd64
+            runner: macos-latest
+            goos: darwin
+            goarch: amd64
+            binary: truekanban-macos-amd64
+
+          - os: macos-arm64
+            runner: macos-latest
+            goos: darwin
+            goarch: arm64
+            binary: truekanban-macos-arm64
+
+          - os: windows-amd64
+            runner: windows-latest
+            goos: windows
+            goarch: amd64
+            binary: truekanban-windows-amd64.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install GCC (Linux cross-compile arm64)
+        if: matrix.os == 'linux-arm64'
+        run: sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "1"
+          CC: ${{ matrix.os == 'linux-arm64' && 'aarch64-linux-gnu-gcc' || '' }}
+        run: go build -ldflags="-s -w" -o ${{ matrix.binary }} .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.binary }}
+          path: ${{ matrix.binary }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: binaries
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: binaries/*
+          generate_release_notes: true
