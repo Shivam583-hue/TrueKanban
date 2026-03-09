@@ -12,10 +12,10 @@ import (
 func main() {
 	db.Init()
 	defer db.Close()
-
-	m := tui.New()
-	p := tea.NewProgram(m)
-
+	mainModel := tui.New()
+	models := []tea.Model{mainModel, tui.NewForm(0)}
+	tui.SetModels(models)
+	p := tea.NewProgram(mainModel)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)

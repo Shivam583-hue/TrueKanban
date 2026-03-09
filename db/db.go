@@ -31,18 +31,18 @@ func Init() {
 	}
 }
 
-func Insert(title string, status string) {
+func Insert(title string, status types.Status) {
 	_, err := db.Exec(
 		"INSERT INTO tasks(title, status) VALUES(?, ?)",
 		title,
-		status,
+		int(status),
 	)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func Fetch(status string) []list.Item {
+func Fetch(status types.Status) []list.Item {
 	rows, err := db.Query(
 		"SELECT id, title, status FROM tasks WHERE status = ?",
 		status,
@@ -64,7 +64,7 @@ func Fetch(status string) []list.Item {
 	return items
 }
 
-func Update(id int, newStatus string) {
+func Update(id int, newStatus types.Status) {
 	_, err := db.Exec(
 		"UPDATE tasks SET status = ? WHERE id = ?",
 		newStatus, id,
