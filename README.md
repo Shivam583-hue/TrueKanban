@@ -2,7 +2,8 @@
 
 A terminal-based Kanban board built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and SQLite. Manage your tasks without leaving the terminal.
 
-> 📹 Demo coming soon
+## Demo
+![TrueKanban Demo](demo.gif)
 
 ---
 
