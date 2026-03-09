@@ -3,6 +3,8 @@ package tui
 import (
 	"github.com/Shivam583-hue/TrueKanban/db"
 	"github.com/Shivam583-hue/TrueKanban/types"
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -45,13 +47,14 @@ var (
 
 type model struct {
 	quitting bool
+	help     help.Model
 	focused  types.Status
 	lists    []list.Model
 	loaded   bool
 }
 
 func New() *model {
-	return &model{}
+	return &model{help: help.New()}
 }
 
 func SetModels(m []tea.Model) {
@@ -140,29 +143,47 @@ func (m model) View() string {
 	if !m.loaded {
 		return "Loading..."
 	}
+
 	todoView := m.lists[todo].View()
 	inProgressView := m.lists[inProgress].View()
 	doneView := m.lists[done].View()
+
+	var board string
+
 	switch m.focused {
 	case inProgress:
-		return lipgloss.JoinHorizontal(lipgloss.Left,
+		board = lipgloss.JoinHorizontal(
+			lipgloss.Left,
 			columnStyle.Render(todoView),
 			focusedStyle.Render(inProgressView),
 			columnStyle.Render(doneView),
 		)
+
 	case done:
-		return lipgloss.JoinHorizontal(lipgloss.Left,
+		board = lipgloss.JoinHorizontal(
+			lipgloss.Left,
 			columnStyle.Render(todoView),
 			columnStyle.Render(inProgressView),
 			focusedStyle.Render(doneView),
 		)
+
 	default:
-		return lipgloss.JoinHorizontal(lipgloss.Left,
+		board = lipgloss.JoinHorizontal(
+			lipgloss.Left,
 			focusedStyle.Render(todoView),
 			columnStyle.Render(inProgressView),
 			columnStyle.Render(doneView),
 		)
 	}
+
+	helpView := m.help.View(keys)
+
+	return lipgloss.JoinVertical(
+		lipgloss.Left,
+		board,
+		"",
+		helpView,
+	)
 }
 
 func (m *model) MoveToNext() tea.Msg {
@@ -244,4 +265,35 @@ func (f Form) View() string {
 		"",
 		"Enter to save • Esc to cancel",
 	)
+}
+
+// ── Help ──────────────────────────────────────────────────────
+type keyMap struct {
+	Left   key.Binding
+	Right  key.Binding
+	Move   key.Binding
+	Delete key.Binding
+	New    key.Binding
+	Quit   key.Binding
+}
+
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Left, k.Right, k.Move, k.Delete, k.New, k.Quit}
+}
+
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.Left, k.Right},
+		{k.Move, k.Delete},
+		{k.New, k.Quit},
+	}
+}
+
+var keys = keyMap{
+	Left:   key.NewBinding(key.WithKeys("left", "h"), key.WithHelp("←/h", "move left")),
+	Right:  key.NewBinding(key.WithKeys("right", "l"), key.WithHelp("→/l", "move right")),
+	Move:   key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "move task forward")),
+	Delete: key.NewBinding(key.WithKeys("x"), key.WithHelp("x", "delete task")),
+	New:    key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new task")),
+	Quit:   key.NewBinding(key.WithKeys("q", "ctrl+c"), key.WithHelp("q", "quit")),
 }
