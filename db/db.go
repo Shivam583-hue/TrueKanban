@@ -22,7 +22,7 @@ func Init() {
 	CREATE TABLE IF NOT EXISTS tasks (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
-		status TEXT NOT NULL
+		status INTEGER NOT NULL
 	);`
 
 	_, err = db.Exec(query)

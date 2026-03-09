@@ -2,12 +2,13 @@ package tui
 
 import (
 	"github.com/Shivam583-hue/TrueKanban/db"
+	"github.com/Shivam583-hue/TrueKanban/types"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-const divisor = 4
+const divisor = 3
 
 var (
 	columnStyle  = lipgloss.NewStyle().Padding(1, 2)
@@ -102,6 +103,12 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "left", "h":
+			m.Prev()
+		case "right", "l":
+			m.Next()
+		case "enter":
+			return m, m.MoveToNext
 		case "ctrl+c", "q":
 			m.quitting = true
 			return m, tea.Quit
@@ -110,4 +117,33 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	m.lists[m.focused], cmd = m.lists[m.focused].Update(msg)
 	return m, cmd
+}
+
+func (m *model) MoveToNext() tea.Msg {
+	selectedItem := m.lists[m.focused].SelectedItem()
+	selectedTask := selectedItem.(types.Task)
+	m.lists[selectedTask.Status].RemoveItem(m.lists[m.focused].Index())
+	selectedTask.Next()
+	// m.lists[selectedTask.status].InsertItem(len(m.lists[selectedTask.status].Items())-1, list.Item(selectedTask))
+	m.lists[selectedTask.Status].InsertItem(
+		len(m.lists[selectedTask.Status].Items()), // Correct index to append
+		list.Item(selectedTask),
+	)
+	return nil
+}
+
+func (m *model) Next() {
+	if m.focused == done {
+		m.focused = todo
+	} else {
+		m.focused++
+	}
+}
+
+func (m *model) Prev() {
+	if m.focused == todo {
+		m.focused = done
+	} else {
+		m.focused--
+	}
 }
