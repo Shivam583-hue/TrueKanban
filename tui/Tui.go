@@ -105,10 +105,26 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "left", "h":
 			m.Prev()
+
 		case "right", "l":
 			m.Next()
+
 		case "enter":
+			if len(m.lists[m.focused].Items()) == 0 {
+				return m, nil
+			}
+			if m.focused == done {
+				m.lists[m.focused].RemoveItem(m.lists[m.focused].Index())
+				return m, nil
+			}
 			return m, m.MoveToNext
+
+		case "x":
+			if len(m.lists[m.focused].Items()) > 0 {
+				m.lists[m.focused].RemoveItem(m.lists[m.focused].Index())
+			}
+			return m, nil
+
 		case "ctrl+c", "q":
 			m.quitting = true
 			return m, tea.Quit
