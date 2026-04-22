@@ -44,7 +44,7 @@ truekanban
 
 ### Windows (PowerShell)
 ```powershell
-curl -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-windows-amd64.exe -o truekanban.exe
+curl.exe -L https://github.com/Shivam583-hue/TrueKanban/releases/latest/download/truekanban-windows-amd64.exe -o truekanban.exe
 move truekanban.exe C:\Windows\System32\truekanban.exe
 truekanban
 ```
