@@ -62,7 +62,7 @@ func SetModels(m []tea.Model) {
 }
 
 func (m *model) initLists(width, height int) {
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/divisor, height/2)
+	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/divisor, height-6)
 	defaultList.SetShowHelp(false)
 	m.lists = []list.Model{defaultList, defaultList, defaultList}
 
