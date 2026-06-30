@@ -1,2 +1,4 @@
 task.db 
+.gocache
+.gomodcache
 
